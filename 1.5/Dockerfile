@@ -24,7 +24,7 @@ RUN yum install -y centos-release-scl && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y && \
     rm -rf /opt/app-root/src/.pki && \
-    (curl https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz | \
+    (wget -O - https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz | \
         tar -zx -C /usr/local)
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
