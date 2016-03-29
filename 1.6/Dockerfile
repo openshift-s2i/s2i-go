@@ -23,9 +23,9 @@ RUN yum install -y centos-release-scl && \
     yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y && \
-    rm -rf /opt/app-root/src/.pki && \
-    (wget -O - https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz | \
-        tar -zx -C /usr/local)
+    rm -rf $HOME/.pki && \
+    (curl -L https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz | \
+        tar -xz -C /usr/local)
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/ $STI_SCRIPTS_PATH

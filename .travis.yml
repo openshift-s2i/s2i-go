@@ -6,7 +6,7 @@ services:
 before_install:
   # Download and install source-to-image (S2I)
   - mkdir $HOME/.bin
-  - wget -O - https://github.com/openshift/source-to-image/releases/download/v1.0.5/source-to-image-v1.0.5-b731f95-linux-amd64.tar.gz |
+  - curl -L https://github.com/openshift/source-to-image/releases/download/v1.0.5/source-to-image-v1.0.5-b731f95-linux-amd64.tar.gz |
     tar -zx -C $HOME/.bin
   - export PATH=$PATH:$HOME/.bin
 
