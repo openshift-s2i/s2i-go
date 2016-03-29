@@ -23,7 +23,6 @@ RUN yum install -y centos-release-scl && \
     yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y && \
-    rm -rf $HOME/.pki && \
     (curl -L https://storage.googleapis.com/golang/go1.4.3.linux-amd64.tar.gz | \
         tar -xz -C /usr/local)
 

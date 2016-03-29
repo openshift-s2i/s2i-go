@@ -30,8 +30,5 @@ go install main
 echo
 echo "===> Build completed at $(date)"
 
-# TODO: re-enable this once this issue is resolved:
-# https://github.com/openshift/sti-python/issues/60
-#
 # Fix source directory permissions
-#fix-permissions ./
+fix-permissions ./
