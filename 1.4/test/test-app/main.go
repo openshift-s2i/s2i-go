@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/golang/glog"
 	"net/http"
@@ -18,6 +19,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	flag.Parse()
+
 	glog.Info("Starting server...")
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8080", nil)
