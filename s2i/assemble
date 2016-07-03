@@ -13,6 +13,26 @@ function finish {
 }
 trap finish EXIT
 
+echo "---> Understand root folder for source code"
+if [ -z "${ROOT_PACKAGE}" ]
+then
+    if [ ! -z "${SOURCE_REPOSITORY_URL}" ]
+    then
+        ROOT_PACKAGE=$(echo "$SOURCE_REPOSITORY_URL" | sed -re "s/(https:\/\/|git@)([^?]+)\.git/\2/g" | sed -re "s/:/\//g")
+        if [ ! -z "${CONTEXT_DIR}" ]
+        then
+            ROOT_PACKAGE="$ROOT_PACKAGE/$CONTEXT_DIR"
+        fi
+    fi
+fi
+
+if [ -z "${ROOT_PACKAGE}" ]
+then
+    ROOT_PACKAGE="main"
+fi
+
+SOURCE="$SOURCE/$ROOT_PACKAGE"
+
 echo "---> Preparing source..."
 mkdir -p $SOURCE
 
@@ -25,7 +45,7 @@ go get -v ./...
 
 echo "---> Building application source..."
 go build -v -o main
-go install main
+cp ./main $GOBIN
 
 echo
 echo "===> Build completed at $(date)"
