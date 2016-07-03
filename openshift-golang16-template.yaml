@@ -1,0 +1,170 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: golang-v1.6
+  annotations:
+    description: Application template for Golang 1.6
+    tags: Go language
+labels:
+  application: golang
+  template: golang
+  createdBy: amsokol
+parameters:
+  - name: APPLICATION_NAME
+    description: The name for the application, e. g. "goapp16"
+    required: true
+  - name: APPLICATION_HOSTNAME
+    description: Custom hostname for service routes, e. g. "goapp16.apps.openshift.com"
+    required: true
+  - name: S2I_IMAGE_URL
+    description: S2I image url
+    required: true
+    value: docker.io/openshift/go-16-centos7
+  - name: SOURCE_REPOSITORY_URL
+    description: Git source URI for application, e. g. "https://github.com/openshift-s2i/s2i-go.git"
+    required: true
+    value: https://github.com/openshift-s2i/s2i-go.git
+  - name: SOURCE_REPOSITORY_REF
+    description: Git branch/tag reference, e. g. "master"
+    required: true
+    value: master
+  - name: CONTEXT_DIR
+    description: Set this to the relative path to your project if it is not in the root of your repository, e. g. "1.6/test/test-app"
+    value: 1.6/test/test-app
+  - name: GITHUB_TRIGGER_SECRET
+    description: Github trigger secret
+    from: '[a-zA-Z0-9]{40}'
+    generate: expression
+  - name: GENERIC_TRIGGER_SECRET
+    description: Generic build trigger secret
+    from: '[a-zA-Z0-9]{40}'
+    generate: expression
+  - name: GO15VENDOREXPERIMENT
+    description: Enable golang 1.5 (and later versions) vendoring - "1" or "0"
+    value: '1'
+  - name: RESOURCES_CPU_MIN
+    description: The min CPU for application in millicores, e. g. "100m"
+    value: 100m
+  - name: RESOURCES_MEM_MIN
+    description: The min memory for application in (Ei, Pi, Ti, Gi, Mi, Ki), e. g. "100Mi"
+    value: 100Mi
+  - name: RESOURCES_CPU_MAX
+    description: The max CPU for application in millicores, e. g. "1000m"
+    value: 1000m
+  - name: RESOURCES_MEM_MAX
+    description: The max memory for application in (Ei, Pi, Ti, Gi, Mi, Ki), e. g. "500Mi"
+    value: 500Mi
+objects:
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME}
+    spec:
+      triggers:
+        - type: Generic
+          generic:
+            secret: '${GENERIC_TRIGGER_SECRET}'
+        - type: GitHub
+          github:
+            secret: '${GITHUB_TRIGGER_SECRET}'
+        - type: ImageChange
+      source:
+        type: Git
+        git:
+          uri: '${SOURCE_REPOSITORY_URL}'
+          ref: '${SOURCE_REPOSITORY_REF}'
+        contextDir: '${CONTEXT_DIR}'
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: DockerImage
+            name: '${S2I_IMAGE_URL}'
+          env:
+            - name: SOURCE_REPOSITORY_URL
+              value: '${SOURCE_REPOSITORY_URL}'
+            - name: CONTEXT_DIR
+              value: '${CONTEXT_DIR}'
+            - name: GO15VENDOREXPERIMENT
+              value: '${GO15VENDOREXPERIMENT}'
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${APPLICATION_NAME}:latest'
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: '${APPLICATION_NAME}'
+    spec:
+      tags:
+        - name: latest
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: '${APPLICATION_NAME}'
+      labels:
+        deploymentConfig: '${APPLICATION_NAME}'
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - '${APPLICATION_NAME}'
+            from:
+              kind: ImageStreamTag
+              name: '${APPLICATION_NAME}:latest'
+        - type: ConfigChange
+      replicas: 1
+      selector:
+        deploymentConfig: '${APPLICATION_NAME}'
+      template:
+        metadata:
+          labels:
+            deploymentConfig: '${APPLICATION_NAME}'
+        spec:
+          containers:
+            - name: '${APPLICATION_NAME}'
+              image: '${APPLICATION_NAME}'
+              ports:
+                - name: '${APPLICATION_NAME}-http'
+                  containerPort: 8080
+                  protocol: TCP
+              resources:
+                  requests:
+                      cpu: ${RESOURCES_CPU_MIN}
+                      memory: ${RESOURCES_MEM_MIN}
+                  limits:
+                      cpu: ${RESOURCES_CPU_MAX}
+                      memory: ${RESOURCES_MEM_MAX}
+              imagePullPolicy: Always
+              securityContext:
+                privileged: false
+          restartPolicy: Always
+          dnsPolicy: ClusterFirst
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: '${APPLICATION_NAME}-http'
+      annotations:
+        description: "The web server's http port"
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+      selector:
+        deploymentConfig: '${APPLICATION_NAME}'
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: '${APPLICATION_NAME}-http-route'
+      annotations:
+        description: "Route for application's http service"
+    spec:
+      host: '${APPLICATION_HOSTNAME}'
+      to:
+        kind: Service
+        name: '${APPLICATION_NAME}-http'
