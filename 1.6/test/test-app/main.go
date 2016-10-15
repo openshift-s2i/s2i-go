@@ -21,7 +21,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
   
   for _, e := range os.Environ() {
         pair := strings.Split(e, "=")
-        fmt.Fprintf(w, "  %s\n", pair[0]))
+        fmt.Fprintf(w, "  %s\n", pair[0])
     }
 }
 
