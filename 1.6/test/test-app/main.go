@@ -6,7 +6,6 @@ import (
 	"github.com/golang/glog"
 	"net/http"
 	"runtime"
-  "os"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
