@@ -3,6 +3,7 @@
 set -e
 
 echo
+echo "oli assemble"
 echo "===> Build started at $(date)"
 echo
 START=$SECONDS
