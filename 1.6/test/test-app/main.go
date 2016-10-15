@@ -15,6 +15,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	h.Set("Content-Type", "text/plain")
 
 	fmt.Fprint(w, "Hello world!\n\n")
+  fmt.Fprint(w, "oli go go openshift!\n\n")
 	fmt.Fprintf(w, "Go version: %s\n", runtime.Version())
 }
 
