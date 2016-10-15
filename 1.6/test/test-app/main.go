@@ -20,7 +20,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Go version: %s\n", runtime.Version())
   
   for _, e := range os.Environ() {
-        pair := strings.Split(e, "=")
+        //pair := strings.Split(e, "=")
         fmt.Fprintf(w, e)
     }
 }
