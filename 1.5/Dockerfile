@@ -7,7 +7,7 @@ MAINTAINER SoftwareCollections.org <sclorg@redhat.com>
 EXPOSE 8080
 
 ENV GO_MINOR_VERSION=5 \
-    GO_PATCH_VERSION=3
+    GO_PATCH_VERSION=4
 
 ENV GO_VERSION=1.${GO_MINOR_VERSION} \
     GOPATH=$HOME/go \
