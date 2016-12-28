@@ -116,9 +116,7 @@ Contributing
 ~~~~~~~~~~~~
 
 Contributions to this project (in the form of bug reports, patches, or pull
-requests) are gratefully accepted by the maintainer.  Please see the
-link:Contributing.adoc[Contributing.adoc] file contained in this package
-for details.
+requests) are gratefully accepted by the maintainer.
 
 [[copyright-license]]
 Copyright and License
