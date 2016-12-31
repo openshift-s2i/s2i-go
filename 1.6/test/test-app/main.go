@@ -6,6 +6,7 @@ import (
 	"github.com/golang/glog"
 	"net/http"
 	"runtime"
+  "os"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +16,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	h.Set("Content-Type", "text/plain")
 
 	fmt.Fprint(w, "Hello world!\n\n")
+  fmt.Fprint(w, "oli go go openshift!\n\n")
 	fmt.Fprintf(w, "Go version: %s\n", runtime.Version())
+  
+  fmt.Fprint(w, "spot the blade!\n\n")
+  
+  for _, e := range os.Environ() {
+        //pair := strings.Split(e, "=")
+        fmt.Fprintf(w, e)
+    }
 }
 
 func main() {
