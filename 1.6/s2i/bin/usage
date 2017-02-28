@@ -1,0 +1,17 @@
+#!/bin/sh
+
+IMAGEVER=$($GO_VERSION | sed s/\.//)
+
+cat <<EOF
+This is a S2I Go $GO_VERSION CentOS base image:
+To use it, install S2I: https://github.com/openshift/source-to-image
+
+Sample invocation:
+
+$ s2i build https://github.com/openshift-s2i/s2i-go.git \\
+    --context-dir=/${GO_VERSION}/test/test-app/ openshift/go-${IMAGEVER}-centos7 go-test-app
+
+You can then run the resulting image via:
+
+$ docker run -p 8080:8080 go-test-app
+EOF
