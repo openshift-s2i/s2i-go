@@ -20,8 +20,12 @@ cp -Rf /tmp/src/. $SOURCE
 
 cd $SOURCE
 
-echo "---> Downloading dependencies..."
-go get -v ./...
+if [ -d "vendor" ]; then
+  echo "---> vendor directory exist. Skipping dependencies download."
+else
+  echo "---> Downloading dependencies..."
+  go get -v ./...
+fi
 
 echo "---> Building application source..."
 go build -v -o main
