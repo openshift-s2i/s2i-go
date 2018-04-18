@@ -1,3 +1,7 @@
+## DEPRECATED REPOSITORY
+
+### PLEASE USE https://github.com/sclorg/golang-container INSTEAD
+
 [[go-docker-images]]
 = Go Docker images
 
